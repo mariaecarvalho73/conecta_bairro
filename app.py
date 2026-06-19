@@ -20,18 +20,12 @@ import os
 import mysql.connector
 
 def conectar_db():
-    host = os.getenv("MYSQLHOST", "localhost")
-    user = os.getenv("MYSQLUSER", "root")
-    password = os.getenv("MYSQLPASSWORD", "")
-    port = int(os.getenv("MYSQLPORT", 3306))
-    database = os.getenv("MYSQLDATABASE", "conecta_bairro")
-
     return mysql.connector.connect(
-        host=host,
-        user=user,
-        password=password,
-        port=port,
-        database=database
+        host=os.getenv("MYSQLHOST"),
+        user=os.getenv("MYSQLUSER"),
+        password=os.getenv("MYSQLPASSWORD"),
+        port=int(os.getenv("MYSQLPORT", 3306)),
+        database=os.getenv("MYSQLDATABASE")
     )
 
 # ==========================================
@@ -824,5 +818,5 @@ def profissional():
 
 # EXECUTAR
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    port = int(os.getenv("PORT", 8080))
+    app.run(host="0.0.0.0", port=port, debug=False)
