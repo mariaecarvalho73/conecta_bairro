@@ -20,6 +20,7 @@ import os
 import mysql.connector
 
 def conectar_db():
+    # Garantimos que as variáveis limpas da Railway sejam lidas sem espaços
     return mysql.connector.connect(
         host=os.getenv("MYSQLHOST"),
         user=os.getenv("MYSQLUSER"),
@@ -27,7 +28,6 @@ def conectar_db():
         port=int(os.getenv("MYSQLPORT", 3306)),
         database=os.getenv("MYSQLDATABASE")
     )
-
 # ==========================================
 # CRIAR TABELA
 # ==========================================
@@ -816,7 +816,7 @@ def profissional():
     
 
 
-# EXECUTAR
+# Forçamos o host "0.0.0.0" ANTES de qualquer inicialização automática do Flask
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8080))
     app.run(host="0.0.0.0", port=port, debug=False)
