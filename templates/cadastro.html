@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Cadastro - Conecta Bairro</title>
+
+  <style>
+
+    body {
+
+      margin: 0;
+      font-family: Arial, sans-serif;
+
+      background: url("{{ url_for('static', filename='fundo.png') }}");
+
+      background-size: cover;
+      background-position: center;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .box {
+
+      background: rgba(255,255,255,0.96);
+
+      padding: 30px;
+
+      border-radius: 20px;
+
+      width: 350px;
+
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+
+      text-align: center;
+
+      margin-bottom: 20px;
+
+      color: #7a0e88;
+    }
+
+    input,
+    select {
+
+      width: 100%;
+
+      padding: 12px;
+
+      margin: 8px 0;
+
+      border-radius: 10px;
+
+      border: 1px solid #ccc;
+
+      box-sizing: border-box;
+
+      font-size: 14px;
+    }
+
+    label {
+
+      font-size: 14px;
+
+      color: #555;
+
+      font-weight: bold;
+    }
+
+    .senha-box {
+
+      position: relative;
+
+      width: 100%;
+    }
+
+    .senha-box input {
+
+      padding-right: 40px;
+    }
+
+    .toggle-senha {
+
+      position: absolute;
+
+      right: 12px;
+
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      cursor: pointer;
+    }
+
+    .btn {
+
+      width: 100%;
+
+      padding: 12px;
+
+      margin-top: 15px;
+
+      border: none;
+
+      border-radius: 20px;
+
+      background-color: #d482df;
+
+      color: white;
+
+      font-size: 16px;
+
+      cursor: pointer;
+
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+
+      background-color: #b85bc7;
+    }
+
+    .link {
+
+      display: block;
+
+      text-align: center;
+
+      margin-top: 15px;
+
+      text-decoration: none;
+
+      color: #7a0e88;
+
+      font-weight: bold;
+    }
+
+    .foto-preview {
+
+      display: flex;
+
+      justify-content: center;
+
+      margin-bottom: 15px;
+    }
+
+    .foto-preview img {
+
+      width: 90px;
+
+      height: 90px;
+
+      border-radius: 50%;
+
+      object-fit: cover;
+
+      border: 3px solid #d482df;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+  <h2>Cadastre-se</h2>
+
+  <form
+    action="/cadastro"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+
+    <!-- FOTO -->
+
+    <div class="foto-preview">
+
+      <img
+        id="preview"
+        src="{{ url_for('static', filename='user.png') }}"
+      >
+
+    </div>
+
+    <label>Foto de perfil</label>
+
+    <input
+      type="file"
+      name="foto"
+      accept="image/*"
+      onchange="mostrarPreview(event)"
+    >
+
+    <!-- NOME -->
+
+    <input
+      type="text"
+      name="nome"
+      placeholder="Nome completo"
+      required
+    >
+
+    <!-- USUÁRIO -->
+
+    <input
+      type="text"
+      name="nome_de_usuario"
+      placeholder="Nome de usuário"
+      required
+    >
+
+    <!-- SEXO -->
+
+    <select name="sexo" required>
+
+      <option value="">Selecione seu sexo</option>
+
+      <option value="Masculino">Masculino</option>
+
+      <option value="Feminino">Feminino</option>
+
+      <option value="Outro">Outro</option>
+
+    </select>
+
+    <!-- EMAIL -->
+
+    <input
+      type="email"
+      name="email"
+      placeholder="E-mail"
+      required
+    >
+
+    <!-- SENHA -->
+
+    <div class="senha-box">
+
+      <input
+        type="password"
+        id="senha"
+        name="senha"
+        placeholder="Senha"
+        required
+      >
+
+      <span
+        class="toggle-senha"
+        onclick="mostrarSenha()"
+      >
+
+        <img
+          src="{{ url_for('static', filename='olho-fechado.png') }}"
+          id="imgOlho"
+          width="22"
+        >
+
+      </span>
+
+    </div>
+
+    <button type="submit" class="btn">
+
+      Cadastrar
+
+    </button>
+
+  </form>
+
+  <a href="/" class="link">
+
+    ← Voltar
+
+  </a>
+
+</div>
+
+<script>
+
+function mostrarSenha() {
+
+  const input = document.getElementById("senha");
+
+  const img = document.getElementById("imgOlho");
+
+  if (input.type === "password") {
+
+    input.type = "text";
+
+    img.src =
+      "{{ url_for('static', filename='olho-aberto.png') }}";
+
+  }
+
+  else {
+
+    input.type = "password";
+
+    img.src =
+      "{{ url_for('static', filename='olho-fechado.png') }}";
+  }
+}
+
+function mostrarPreview(event) {
+
+  const imagem = document.getElementById("preview");
+
+  imagem.src =
+    URL.createObjectURL(event.target.files[0]);
+}
+
+</script>
+
+</body>
+</html>
+
+

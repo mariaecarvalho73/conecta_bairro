@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Espaço Feminino - Conecta Bairro</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url("../static/fundo.png");
+      padding-bottom: 80px;
+    }
+
+    header {
+      background: #d482df;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      position: relative;
+    }
+
+    .voltar {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .titulo {
+      text-align: center;
+      padding: 20px 20px 5px;
+      color: #7a0e88;
+    }
+
+    .subtitulo {
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .search {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .search input {
+      width: 60%;
+      padding: 12px;
+      border-radius: 25px;
+      border: 1px solid #7a0e88;
+      outline: none;
+    }
+
+    /* AQUI: configuração para os cartões ficarem lado a lado, máximo 4 por linha */
+    .services {
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      width: calc(25% - 15px); /* 4 cartões por linha, menos o espaço entre eles */
+      min-width: 250px; /* não fica menor que 250px em telas pequenas */
+      background: #d482df;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 0 12px rgba(0,0,0,0.12);
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 15px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      color: #7a0e88;
+    }
+
+    .card p {
+      margin: 4px 0;
+      color: white;
+      font-size: 15px;
+    }
+
+    .rating {
+      margin-top: 12px;
+      color: gold;
+      font-size: 18px;
+    }
+
+    .rating span {
+      color: #eee;
+    }
+
+    .fav {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .fav.active {
+      color: gold;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #d482df;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+      z-index: 1000;
+    }
+
+    .bottom-nav a {
+      color: white;
+      text-decoration: none;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .bottom-nav a.active {
+      color: white;
+      font-weight: bold;
+    }
+
+    #semResultado {
+      text-align: center;
+      margin-top: 20px;
+      color:#7a0e88;
+      width: 100%;
+    }
+
+    /* BOTÃO MAPA */
+    .mapa-card {
+      display: block;
+      width: 35px;
+      height: 35px;
+      margin-top: 10px;
+      margin-left: auto;
+      background-image: url("/static/mapa0.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      text-decoration: none;
+    }
+
+    /* Ajuste para telas médias */
+    @media (max-width: 992px) {
+      .card {
+        width: calc(33.33% - 14px); /* 3 por linha */
+      }
+    }
+
+    @media (max-width: 768px) {
+      .card {
+        width: calc(50% - 10px); /* 2 por linha */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        width: 100%; /* 1 por linha */
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header>
+  <a href="/home" class="voltar">← Voltar</a>
+  💜 Espaço Feminino
+</header>
+
+<h2 class="titulo">Profissionais Mulheres</h2>
+<p class="subtitulo">Encontre serviços realizados apenas por mulheres.</p>
+
+<div class="search">
+  <input type="text" id="busca" placeholder="Buscar serviço feminino...">
+</div>
+
+<div id="semResultado" style="display:none;">
+  Nenhum serviço encontrado
+</div>
+
+<div class="services">
+  {% for perfil in perfis %}
+
+    <div class="card" data-id="{{ perfil.id_perfil }}">
+
+      <div class="fav" onclick="favoritar(this)">☆</div>
+
+      {% if perfil.logo %}
+        <img src="{{ url_for('static', filename='uploads/' + perfil.logo) }}">
+      {% endif %}
+
+      <div class="card-content">
+        <h3>{{ perfil.nome_perfil }}</h3>
+        <p>{{ perfil.descricao }}</p>
+        <p>Tel: {{ perfil.telefone }}</p>
+        {% if perfil.instagram %}
+          <p>Inst: {{ perfil.instagram }}</p>
+        {% endif %}
+        {% if perfil.a_domicilio %}
+          <p>Atendimento a domicílio</p>
+        {% endif %}
+
+        {% if perfil.rua and perfil.numero and perfil.bairro and perfil.cidade and perfil.estado %}
+          {% set endereco_completo = perfil.rua ~ ', ' ~ perfil.numero ~ ' - ' ~ perfil.bairro ~ ', ' ~ perfil.cidade ~ ' - ' ~ perfil.estado %}
+          <a href="https://www.google.com/maps/search/?api=1&query={{ endereco_completo | urlencode }}"
+             target="_blank"
+             class="mapa-card">
+          </a>
+        {% endif %}
+
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
+
+<script>
+// Função de favoritar IGUAL a da página inicial
+function favoritar(el) {
+  const card = el.closest(".card");
+
+  const servico = {
+    id: card.getAttribute("data-id"),
+    nome: card.querySelector("h3").innerText,
+    descricao: card.querySelector("p:nth-of-type(1)")?.innerText || "",
+    telefone: card.querySelector("p:nth-of-type(2)")?.innerText || "",
+    instagram: card.querySelector("p:nth-of-type(3)")?.innerText || "",
+    img: card.querySelector("img")?.src || "",
+    endereco: card.querySelector(".mapa-card")?.href || ""
+  };
+
+  let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+
+  const index = favoritos.findIndex(f => f.id === servico.id);
+
+  if (index !== -1) {
+    favoritos.splice(index, 1); // remove
+    el.classList.remove("active");
+    el.textContent = "☆";
+  } else {
+    favoritos.push(servico); // adiciona
+    el.classList.add("active");
+    el.textContent = "★";
+  }
+
+  localStorage.setItem("favoritos", JSON.stringify(favoritos));
+}
+
+// Carrega os favoritos marcados ao abrir a página
+document.addEventListener("DOMContentLoaded", function() {
+  const favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+  const cards = document.querySelectorAll(".card");
+
+  cards.forEach(card => {
+    const id = card.getAttribute("data-id");
+    const estrela = card.querySelector(".fav");
+
+    const ehFavorito = favoritos.find(f => f.id === id);
+
+    if (ehFavorito) {
+      estrela.classList.add("active");
+      estrela.textContent = "★";
+    }
+  });
+});
+
+// Função de busca IGUAL a da página inicial
+document.addEventListener("DOMContentLoaded", function() {
+  const input = document.getElementById("busca");
+  const mensagem = document.getElementById("semResultado");
+
+  input.addEventListener("keyup", function() {
+    const texto = input.value.toLowerCase().trim();
+    const cards = document.querySelectorAll(".card");
+
+    let encontrou = false;
+
+    cards.forEach(function(card) {
+      const nome = card.textContent.toLowerCase();
+
+      if (nome.includes(texto)) {
+        card.style.display = "";
+        encontrou = true;
+      } else {
+        card.style.display = "none";
+      }
+    });
+
+    if (!encontrou) {
+      mensagem.style.display = "block";
+    } else {
+      mensagem.style.display = "none";
+    }
+  });
+});
+</script>
+
+<nav class="bottom-nav">
+  <a href="/home"><br>Início</a>
+  <a href="/favoritos"><br>Favoritos</a>
+  <a href="/config"><br>Config</a>
+  <a href="/espaco_feminino" class="active"><br>Espaço Feminino</a>
+</nav>
+
+</body>
+</html>

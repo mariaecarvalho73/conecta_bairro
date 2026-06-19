@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Conecta Bairro</title>
+
+  <style>
+    body {
+     margin: 0;
+  font-family: Arial, sans-serif;
+  color: white;  
+  background: url("{{ url_for('static', filename='fundo.png') }}");
+
+  background-size: cover;
+  background-position: center;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 80px;
+    }
+
+    /* AGORA TEXTO FICA À ESQUERDA */
+    .left {
+      flex: 1;
+      max-width: 400px;
+    }
+
+    /* IMAGEM À DIREITA */
+    .right {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .right img {
+      width: 800px;
+      max-width: 100%;
+    }
+
+    h1 {
+      font-size: 50px;
+      margin-bottom: 30px;
+    }
+
+    p {
+      font-size: 20px;
+      margin-bottom: 50px;
+    }
+
+    .buttons {
+  display: flex;
+  flex-direction: row; /* deixa na horizontal */
+  gap: 15px;
+}
+    
+
+    .btn {
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-size: 16px;
+      text-decoration: none;
+      text-align: center;
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    .btn-login {
+      background-color: #d482df;
+      color: white;
+    }
+
+    .btn-login:hover {
+      background-color: #d482df;
+    }
+
+    .btn-cadastro {
+      background-color: #d482df;
+      color: white;
+    }
+
+    .btn-cadastro:hover {
+      background-color: #d482df;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- TEXTO (AGORA ESQUERDA) -->
+    <div class="left">
+      <h1>Conecta Bairro</h1>
+      <p><span>Encontre serviços perto de você de forma rápida e fácil.</span><br>
+         <span>No Conecta Bairro, você descobre profissionais da sua região e apoia o comércio local.</span><br>
+       </p>
+
+      <div class="buttons">
+        <a href="/login" class="btn btn-login">Entrar</a>
+        <a href="/cadastro" class="btn btn-cadastro">Cadastrar</a>
+      </div>
+    </div>
+
+    <!-- IMAGEM (AGORA DIREITA) -->
+    <div class="right">
+      <img src="{{ url_for('static', filename='celular.png') }}" alt="App Conecta Bairro">
+    </div>
+
+  </div>
+
+</body>
+</html>

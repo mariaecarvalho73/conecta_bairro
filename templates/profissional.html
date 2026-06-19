@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Perfil Profissional - Conecta Bairro</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+  <style>
+    body {
+      background: url("{{ url_for('static', filename='fundo.png') }}");
+      padding-bottom: 80px;
+    }
+    header {
+      background: #d482df;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .voltar {
+      position: absolute;
+      left: 15px;
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    .conteudo {
+      padding: 20px;
+    }
+    .card-form {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #7a0e88;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ce93d8;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    button {
+      background: #d482df;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #ba68c8;
+    }
+    .perigo {
+      background: #e91e63;
+    }
+    .perigo:hover {
+      background: #c2185b;
+    }
+    .aviso {
+      background: #fff3cd;
+      color: #856404;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    .sucesso {
+      background: #d4edda;
+      color: #155724;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    .erro {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    .item-lista {
+      background: #f3e5f5;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 8px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .mapa-btn {
+      background: #4285F4;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 14px;
+      margin-top: 5px;
+      display: inline-block;
+    }
+    .mapa-btn:hover {
+      background: #3367D6;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+    .modal-conteudo {
+      background: white;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 350px;
+      text-align: center;
+    }
+    .bottom-menu {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #d482df;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+    .menu-btn {
+      text-decoration: none;
+      color: white;
+      font-size: 14px;
+      text-align: center;
+    }
+    .ativo {
+      color: white;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/config" class="voltar">← Voltar</a>
+  💼 Perfil Profissional
+</header>
+
+<div class="conteudo">
+  <!-- MENSAGENS DE ALERTA -->
+  {% with mensagens = get_flashed_messages(with_categories=true) %}
+  {% if mensagens %}
+    {% for categoria, mensagem in mensagens %}
+      <div class="{{ categoria }}">{{ mensagem }}</div>
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  {% if not usuario.termos_aceitos %}
+  <div class="aviso">
+    <h4 style="margin-top:0;">📜 Termos de Uso</h4>
+    <p>Para criar perfil profissional, você concorda que os dados cadastrados são verdadeiros e autoriza a exibição pública dos serviços.</p>
+    <form method="POST" action="/aceitar_termos">
+      <label style="color:#7a0e88;">
+        <input type="checkbox" required> Li e aceito os termos
+      </label>
+      <button type="submit">Aceitar Termos</button>
+    </form>
+  </div>
+
+  {% else %}
+  <!-- ✅ REMOVIDO O if not perfil DAQUI → AGORA SEMPRE APARECE QUANDO TERMOS ACEITOS -->
+
+    <div class="card-form">
+  <h3 style="color:#7a0e88; margin-top:0;">Editar Perfil Profissional</h3>
+
+  <form method="POST" action="/salvar_perfil_profissional" enctype="multipart/form-data">
+
+    <label>Nome do perfil:</label>
+    <input type="text" name="nome_perfil" value="{{ perfil.nome_perfil if perfil else '' }}" required>
+
+    <label>Logo atual:</label>
+    {% if perfil and perfil.logo %}
+      <img src="{{ url_for('static', filename='uploads/' + perfil.logo) }}" width="80">
+    {% endif %}
+    <input type="file" name="logo" accept="image/*">
+
+    <label>Descrição:</label>
+    <textarea name="descricao" rows="4" required>{{ perfil.descricao if perfil else '' }}</textarea>
+
+    <h4 style="color:#7a0e88; margin:15px 0 5px;">📍 Endereço</h4>
+
+    <label>Rua:</label>
+    <input type="text" name="rua" value="{{ perfil.rua if perfil else '' }}" required>
+
+    <label>Número:</label>
+    <input type="text" name="numero" value="{{ perfil.numero if perfil else '' }}" required>
+
+    <label>Bairro:</label>
+    <input type="text" name="bairro" value="{{ perfil.bairro if perfil else '' }}" required>
+
+    <label>Cidade:</label>
+    <input type="text" name="cidade" value="{{ perfil.cidade if perfil else '' }}" required>
+
+    <label>Estado:</label>
+    <input type="text" name="estado" value="{{ perfil.estado if perfil else '' }}" required>
+
+    <label>Telefone:</label>
+    <input type="text" name="telefone" value="{{ perfil.telefone if perfil else '' }}" placeholder="(21) 99999-9999">
+
+    <label>Instagram:</label>
+    <input type="text" name="instagram" value="{{ perfil.instagram if perfil else '' }}" placeholder="@seuinstagram">
+
+    <label style="color:#7a0e88;">
+      <input type="checkbox" name="a_domicilio"
+      {% if perfil and perfil.a_domicilio %}checked{% endif %}>
+      Atendo a domicílio
+    </label>
+
+    {% if session.sexo == 'feminino' or session.sexo == 'Feminino' %}
+
+      <hr style="margin:20px 0;">
+
+      <label>Onde deseja exibir seu perfil?</label>
+
+      <label>
+        <input type="checkbox" name="local_exibicao" value="home" checked>
+        Home
+      </label>
+
+      <label>
+        <input type="checkbox" name="local_exibicao" value="espaco_feminino">
+        Espaço Feminino
+      </label>
+
+      <div class="aviso">
+        <strong>🌸 Espaço Feminino</strong><br>
+        Área destinada à divulgação de serviços realizados por mulheres da comunidade, fortalecendo o empreendedorismo feminino.
+      </div>
+
+    {% endif %}
+
+    <div style="text-align:center; margin-top:25px;">
+      <button type="submit">Atualizar Perfil</button>
+    </div>
+
+  </form>
+</div>
+
+
+
+
+
+</form>
+      </form>
+    </div>
+
+    <!-- ✅ FORMULÁRIO DE ADICIONAR SERVIÇO SEPARADO (NÃO DENTRO DO OUTRO FORM) -->
+    <div class="card-form">
+      <h3 style="color:#7a0e88; margin-top:0;"></h3>
+
+      
+
+    <!-- ✅ BOTÃO DE EXCLUIR FORA DE FORMULÁRIOS -->
+    <div style="text-align:center; margin-top:25px;">
+  <button class="perigo" onclick="abrirModal('modalExcluirPerfil')">
+    Excluir Perfil Profissional
+  </button>
+</div>
+
+  <!-- ✅ MODAL DE CONFIRMAÇÃO EXCLUIR PERFIL -->
+  
+
+
+  {% endif %}
+</div>
+
+
+ <div style="text-align:center; margin-top:20px;">
+<div id="modalExcluirPerfil" class="modal">
+  <div class="modal-conteudo">
+    <h3 style="color:#e91e63;">⚠️ Excluir Perfil Profissional</h3>
+    <p>Ao excluir, sua conta volta a ser apenas pessoal, e você poderá alterar nome e foto novamente.</p>
+    <a href="/excluir_perfil"><button class="perigo">Sim, excluir</button></a>
+    <button type="button" onclick="fecharModal('modalExcluirPerfil')">Cancelar</button>
+  </div>
+</div>
+</div>
+
+
+<!-- ✅ MENU -->
+<div class="bottom-menu">
+  <a href="/home" class="menu-btn"><br>Início</a>
+  <a href="/favoritos" class="menu-btn"><br>Favoritos</a>
+  <a href="/config" class="menu-btn ativo"><br>Config</a>
+  {% if session.sexo == 'feminino' or session.sexo == 'Feminino' %}
+  <a href="/espaco_feminino" class="menu-btn"><br>Espaço Feminino</a>
+  {% endif %}
+</div>
+
+<script>
+// MODAIS
+function abrirModal(id) { document.getElementById(id).style.display = 'block'; }
+function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Conecta Bairro</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url("../static/fundo.png");
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .box {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      width: 320px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #7a0e88;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .senha-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .senha-box input {
+      padding-right: 40px;
+    }
+
+    .toggle-senha {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 20px;
+      background-color: #d482df;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #7a0e88;
+    }
+
+    .link {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      text-decoration: none;
+      color: #7a0e88;
+    };
+    
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+    <h2>Entrar</h2>
+<form action="/login" method="POST">
+
+  <input 
+    type="email" 
+    id="email"
+    name="email" 
+    placeholder="E-mail" 
+    required
+  >
+
+  <div class="senha-box">
+
+    <input 
+      type="password" 
+      id="senha"
+      name="senha" 
+      placeholder="Senha" 
+      required
+    >
+
+    <span class="toggle-senha" onclick="mostrarSenha()">
+      <img src="../static/olho-fechado.png" id="imgOlho" width="22">
+    </span>
+
+  </div>
+
+  <button class="btn">Entrar</button>
+
+</form>
+
+<script>
+
+function mostrarSenha() {
+  const input = document.getElementById("senha");
+  const img = document.getElementById("imgOlho");
+
+  if (input.type === "password") {
+    input.type = "text";
+    img.src = "../static/olho-aberto.png";
+  } else {
+    input.type = "password";
+    img.src = "../static/olho-fechado.png";
+  }
+}
+
+function entrar(e) {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+  if (usuario && email === usuario.email && senha === usuario.senha) {
+    alert("Login realizado!");
+    window.location.href = "home";
+  } else {
+    alert("Email ou senha incorretos!");
+  }
+}
+
+</script>
+
+    <a href="/cadastro" class="link">Criar uma conta</a>
+    <!-- ✅ AQUI ESTAVA O ERRO! AGORA ESTÁ CERTO -->
+    <a href="/" class="link">← Voltar</a>
+  </div>
+
+</body>
+</html>

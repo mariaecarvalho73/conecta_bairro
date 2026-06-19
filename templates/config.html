@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Configurações - Conecta Bairro</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+  <style>
+    body {
+      background: url("{{ url_for('static', filename='fundo.png') }}");
+      padding-bottom: 80px;
+    }
+    header {
+      background: #d482df;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .abas {
+      display: flex;
+      background: #f3e5f5;
+      border-bottom: 1px solid #ce93d8;
+    }
+    .aba {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      color: #7a0e88;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .aba.ativa {
+      background: #d482df;
+      color: white;
+    }
+    .aba-link {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      color: #7a0e88;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .aba-link:hover {
+      background: #e1bee7;
+    }
+    .conteudo {
+      padding: 20px;
+      display: none;
+    }
+    .conteudo.ativo {
+      display: block;
+    }
+    .card-form {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #7a0e88;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ce93d8;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    button {
+      background: #d482df;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #ba68c8;
+    }
+    .perigo {
+      background: #e91e63;
+    }
+    .perigo:hover {
+      background: #c2185b;
+    }
+    .aviso {
+      background: #fff3cd;
+      color: #856404;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    .sucesso {
+      background: #d4edda;
+      color: #155724;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    .erro {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    .item-lista {
+      background: #f3e5f5;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 8px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+    .modal-conteudo {
+      background: white;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 350px;
+      text-align: center;
+    }
+    .bottom-menu {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #d482df;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+    .menu-btn {
+      text-decoration: none;
+      color: white;
+      font-size: 14px;
+      text-align: center;
+    }
+    .menu-btn.ativo {
+      color: white;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<header>⚙️ Configurações</header>
+
+<!-- ABAS -->
+<div class="abas">
+  <div class="aba ativa" data-alvo="perfil">👤 Perfil</div>
+  <!-- ✅ AGORA É UM LINK PARA A PÁGINA NOVA -->
+  <a href="/profissional" class="aba-link">💼 Perfil Profissional</a>
+</div>
+
+<!-- MENSAGENS DE ALERTA -->
+{% with mensagens = get_flashed_messages(with_categories=true) %}
+{% if mensagens %}
+  {% for categoria, mensagem in mensagens %}
+    <div class="{{ categoria }}" style="padding:15px; text-align:center;">{{ mensagem }}</div>
+  {% endfor %}
+{% endif %}
+{% endwith %}
+
+
+<!-- ✅ ABA PERFIL (SÓ ELA FICOU AQUI) -->
+<div class="conteudo ativo" id="perfil">
+  <div class="card-form">
+    <h3 style="color:#7a0e88; margin-top:0;">Alterar Nome de Usuário</h3>
+    <form method="POST" action="/alterar_usuario">
+      <label>Novo nome de usuário:</label>
+      <input type="text" name="novo_usuario" value="{{ usuario.nome_de_usuario }}" required>
+      <button type="submit">Salvar</button>
+    </form>
+  </div>
+
+  <div class="card-form">
+    <h3 style="color:#7a0e88; margin-top:0;">Alterar Senha</h3>
+    <form method="POST" action="/alterar_senha">
+      <label>Senha atual:</label>
+      <input type="password" name="senha_atual" required>
+      <label>Nova senha:</label>
+      <input type="password" name="nova_senha" required>
+      <label>Confirmar nova senha:</label>
+      <input type="password" name="confirma_senha" required>
+      <button type="submit">Alterar Senha</button>
+    </form>
+  </div>
+
+  <div class="card-form">
+    <h3 style="color:#7a0e88; margin-top:0;">Alterar Foto de Perfil</h3>
+    <form method="POST" action="/alterar_foto" enctype="multipart/form-data">
+      <input type="file" name="foto_perfil" accept="image/*" required>
+      <button type="submit">Salvar Foto</button>
+    </form>
+  </div>
+
+  <!-- FORMULÁRIO PARA QUEM EXCLUIU PERFIL PROFISSIONAL -->
+  
+
+  <div class="card-form" style="border:2px solid #e91e63;">
+    <h3 style="color:#e91e63; margin-top:0;">Apagar Conta</h3>
+    <p style="color:#666;">Essa ação não pode ser desfeita. Todos os seus dados serão removidos.</p>
+    <button class="perigo" onclick="abrirModal('modalApagar')">Apagar minha conta</button>
+  </div>
+</div>
+
+<!-- ✅ MODAL DE APAGAR CONTA -->
+<div id="modalApagar" class="modal">
+  <div class="modal-conteudo">
+    <h3 style="color:#e91e63;">⚠️ Tem certeza?</h3>
+    <p>Você irá apagar TODOS os seus dados do sistema. Isso não pode ser desfeito.</p>
+    <form method="POST" action="/apagar_conta">
+      <button type="button" onclick="fecharModal('modalApagar')">Cancelar</button>
+      <button type="submit" class="perigo">Sim, apagar tudo</button>
+    </form>
+  </div>
+</div>
+
+<!-- ✅ MENU -->
+<div class="bottom-menu">
+  <a href="/home" class="menu-btn"><br>Início</a>
+  <a href="/favoritos" class="menu-btn"><br>Favoritos</a>
+  <a href="/config" class="menu-btn ativo"><br>Config</a>
+  <!-- ✅ Continua aceitando Feminino OU feminino -->
+  {% if sexo_usuario == 'feminino' or sexo_usuario == 'Feminino' %}
+  <!-- ✅ Link CORRETO, sem erro de nome -->
+  <a href="/espaco_feminino" class="menu-btn"><br>Espaço Feminino</a>
+  {% endif %}
+</div>
+</div>
+
+<!-- ✅ SCRIPTS DAS ABAS E MODAIS -->
+<script>
+// ABAS
+document.querySelectorAll('.aba').forEach(aba => {
+  aba.addEventListener('click', function(){
+    document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+    document.querySelectorAll('.conteudo').forEach(c => c.classList.remove('ativa'));
+    this.classList.add('ativa');
+    document.getElementById(this.dataset.alvo).classList.add('ativa');
+  })
+})
+
+// MODAIS
+function abrirModal(id) { document.getElementById(id).style.display = 'block'; }
+function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// ABRIR ABA CERTA SE VIER DA URL
+window.onload = function(){
+  const urlParams = new URLSearchParams(window.location.search);
+  const aba = urlParams.get('aba');
+  if(aba){
+    document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+    document.querySelectorAll('.conteudo').forEach(c => c.classList.remove('ativa'));
+    document.querySelector(`.aba[data-alvo="${aba}"]`).classList.add('ativa');
+    document.getElementById(aba).classList.add('ativa');
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Conecta Bairro</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+</head>
+
+<body>
+<header>
+<div class="perfil-header">
+  <img src="{{ url_for('static', filename='uploads/' + session['foto']) }}" width="45">
+ <span>{{ session.get('nome', '') }}</span>
+</div>
+<h1> Conecta Bairro</h1></header>
+
+<div class="search">
+  <input type="text" id="busca" placeholder="Buscar serviço...">
+</div>
+<div id="semResultado" style="display:none; text-align:center; margin-top:20px; color:#7a0e88;">
+  Nenhum serviço encontrado 
+</div>
+
+<div class="services">
+{% for perfil in perfis %}
+
+
+
+<div class="card" data-id="{{ perfil.id_perfil }}">
+
+    <div class="fav" onclick="favoritar(this)">☆</div>
+
+   {% if perfil.logo %}
+    <img src="{{ url_for('static', filename='uploads/' + perfil.logo) }}">
+{% endif %}
+
+    <div class="card-content">
+
+        <h3>{{ perfil.nome_perfil }}</h3>
+
+        <p>{{ perfil.descricao }}</p>
+
+        <p>Tel: {{ perfil.telefone }}</p>
+
+        {% if perfil.instagram %}
+        <p>Inst: {{ perfil.instagram }}</p>
+        {% endif %}
+
+         {% if perfil.a_domicilio %}
+            <p> Atendimento a domicílio</p>
+            {% endif %}
+
+        {% if perfil.rua and perfil.numero and perfil.bairro and perfil.cidade and perfil.estado %}
+
+            {% set endereco_completo = perfil.rua ~ ', ' ~ perfil.numero ~ ' - ' ~ perfil.bairro ~ ', ' ~ perfil.cidade ~ ' - ' ~ perfil.estado %}
+
+           <a href="https://www.google.com/maps/search/?api=1&query={{ endereco_completo | urlencode }}"
+           target="_blank"
+            class="mapa-card">
+            </a>
+
+           
+
+        
+
+        
+
+        {% endif %}
+
+    </div>
+
+</div>
+{% endfor %}
+
+
+
+
+<!-- MENU -->
+<div class="bottom-menu">
+  <a href="/home" class="menu-btn ativo"><br>Início</a>
+  <a href="/favoritos" class="menu-btn"><br>Favoritos</a>
+  <a href="/config" class="menu-btn"><br>Config</a>
+  
+  <!-- ✅ Continua aceitando Feminino OU feminino -->
+  {% if sexo_usuario == 'feminino' or sexo_usuario == 'Feminino' %}
+  <!-- ✅ Link CORRETO, sem erro de nome -->
+  <a href="/espaco_feminino" class="menu-btn"><br>Espaço Feminino</a>
+  {% endif %}
+</div>
+</div>
+
+<script>
+function favoritar(el){
+
+    const card = el.closest(".card");
+
+    const servico = {
+
+        id: card.dataset.id,
+
+        nome:
+        card.querySelector("h3")?.innerText || "",
+
+        descricao:
+        card.querySelector("p:nth-of-type(1)")?.innerText || "",
+
+        telefone:
+        card.querySelector("p:nth-of-type(2)")?.innerText || "",
+
+        instagram:
+        card.querySelector("p:nth-of-type(3)")?.innerText || "",
+
+        img:
+        card.querySelector("img")?.src || "",
+
+        endereco:
+        card.querySelector(".mapa-card")?.href || "",
+
+        domicilio:
+        card.innerText.includes("domicílio")
+    };
+
+    let favoritos =
+    JSON.parse(localStorage.getItem("favoritos")) || [];
+
+    const existe =
+    favoritos.find(f => f.id == servico.id);
+
+    if(existe){
+
+        favoritos =
+        favoritos.filter(f => f.id != servico.id);
+
+        el.innerHTML = "☆";
+
+    }else{
+
+        favoritos.push(servico);
+
+        el.innerHTML = "⭐";
+    }
+
+    localStorage.setItem(
+        "favoritos",
+        JSON.stringify(favoritos)
+    );
+}
+</script>
+
+</body>
+</html>
