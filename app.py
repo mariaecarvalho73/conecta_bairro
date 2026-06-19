@@ -16,15 +16,23 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # ==========================================
 # CONEXÃO MYSQL (CORRIGIDA E GARANTIDA)
 # ==========================================
+import os
+import mysql.connector
+
 def conectar_db():
-    conexao = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="131415",
-        database="conecta_bairro",
-        autocommit=True  # 🔴 ISSO É OBRIGATÓRIO: salva automaticamente tudo o que fizer
+    host = os.getenv("MYSQLHOST", "localhost")
+    user = os.getenv("MYSQLUSER", "root")
+    password = os.getenv("MYSQLPASSWORD", "")
+    port = int(os.getenv("MYSQLPORT", 3306))
+    database = os.getenv("MYSQLDATABASE", "conecta_bairro")
+
+    return mysql.connector.connect(
+        host=host,
+        user=user,
+        password=password,
+        port=port,
+        database=database
     )
-    return conexao
 
 # ==========================================
 # CRIAR TABELA
